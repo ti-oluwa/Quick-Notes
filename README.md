@@ -13,7 +13,8 @@ __BASE_URL__: [https://quicknotesapi.pythonanywhere.com/api/](https://quicknotes
   - `POST` 'accounts/authenticate/'
   - `GET` 'accounts/find/?q='
   - `GET` 'accounts/<str:username>/'
-  - `PUT` 'accounts/<str:username>/update/'
+  - `PUT` `PATCH` 'accounts/<str:username>/update/'
+  - `PATCH` 'accounts/<str:username>/change-password/'
   - `DELETE` 'accounts/<str:username>/delete/'
  
  
