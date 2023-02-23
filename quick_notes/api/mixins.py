@@ -33,7 +33,6 @@ class AllowOwnerOnlyMixin():
         - The `obj_owner_field_name` refers to the serializer model field pointing to the user object.
     '''
     
-
     obj_owner_field_name = 'owner'
     
     def get_object(self, *args, **kwargs):
@@ -53,6 +52,26 @@ class AllowOwnerOnlyMixin():
             raise exceptions.PermissionDenied("You are not authorized to access this object")
 
         return obj
+
+
+class AllowUserOrSuperuserMixin():
+
+    def get_object(self, *args, **kwargs):
+        user = super().get_object(*args, **kwargs)
+        
+        if not user.is_authenticated or not (self.request.user.pk == user.pk or self.request.user.is_superuser):
+            raise exceptions.PermissionDenied("You are not authorized to access this account")
+        return user
+
+
+class AllowUserOnlyMixin():
+
+    def get_object(self, *args, **kwargs):
+        user = super().get_object(*args, **kwargs)
+        
+        if not user.is_authenticated or not self.request.user.pk == user.pk:
+            raise exceptions.PermissionDenied("You are not authorized to access this account")
+        return user
 
 
 

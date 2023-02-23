@@ -11,5 +11,6 @@ urlpatterns = [
     path('find/', views.UserSearchAPIView.as_view(), name="account-find"),
     path('<str:username>/', views.UserDetailAPIView.as_view(), name="account-detail"),
     path('<str:username>/update/', views.UserUpdateAPIView.as_view(), name="account-update"),
+    path('<str:username>/change-password/', views.PasswordChangeAPIView.as_view(), name="account-change-password"),
     path('<str:username>/delete/', views.UserDeleteAPIView.as_view(), name="account-delete"),
 ]

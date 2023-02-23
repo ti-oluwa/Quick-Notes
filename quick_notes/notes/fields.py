@@ -277,6 +277,12 @@ class NoteContent:
 
 
 class NoteContentField(models.TextField):
+    '''
+    Takes in an appropriate string or dict representation of the note content. 
+    Saves the note content in the database as a string. 
+    
+    Returns a `NoteContent` object.
+    '''
     description = _("Field that stores a `NoteContent`")
 
     def __init__(self, *args, **kwargs):

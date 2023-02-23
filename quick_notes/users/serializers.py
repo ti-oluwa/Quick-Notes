@@ -1,16 +1,18 @@
+from django.contrib.auth import logout
 from rest_framework import serializers
 from rest_framework.reverse import reverse
+from django.contrib.auth.password_validation import validate_password
+
 
 from .models import CustomUser
-from api.validators import required_field
 
 
 
 class UserSerializer(serializers.ModelSerializer):
     '''User model serializer'''
-
-    firstname = serializers.CharField(validators=[required_field])
-    lastname = serializers.CharField(validators=[required_field])
+    username = serializers.CharField(required=True)
+    firstname = serializers.CharField(required=True)
+    lastname = serializers.CharField(required=True)
     last_active = serializers.SerializerMethodField(read_only=True)
     number_of_notes = serializers.SerializerMethodField(read_only=True)
     number_of_starred_notes = serializers.SerializerMethodField(read_only=True)
@@ -24,8 +26,6 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = [
-            'url',
-            'edit_url',
             'username',
             'fullname',
             'firstname',
@@ -34,6 +34,8 @@ class UserSerializer(serializers.ModelSerializer):
             'email',
             'password',
             'confirm_password',
+            'url',
+            'edit_url',
             'last_active',
             'number_of_notes',
             'number_of_starred_notes',
@@ -42,11 +44,11 @@ class UserSerializer(serializers.ModelSerializer):
         ]
 
     def validate(self, attrs):
-        if attrs['password'] != attrs['confirm_password']:
-            raise serializers.ValidationError('Passwords do not match')
+        if attrs.get('password', None) and attrs.get('confirm_password', None):
+            if attrs['password'] != attrs['confirm_password']:
+                raise serializers.ValidationError('Passwords do not match')
 
-        attrs.pop('confirm_password')
-
+            attrs.pop('confirm_password')
         return super().validate(attrs)
 
 
@@ -57,7 +59,6 @@ class UserSerializer(serializers.ModelSerializer):
 
     def update(self, user, validated_data):
         validated_data = self.strip_validated_fields(validated_data)
-        # validated_data.pop('confirm_password')
         return super().update(user, validated_data)
 
 
@@ -66,7 +67,6 @@ class UserSerializer(serializers.ModelSerializer):
         validated_data['firstname'] = validated_data.get('firstname').strip()
         validated_data['lastname'] = validated_data.get('lastname').strip()
         validated_data['other_name'] = validated_data.get('other_name', '').strip()
-
         return validated_data
 
     def get_number_of_notes(self, user):
@@ -102,15 +102,15 @@ class StrippedUserSerializer(UserSerializer):
     '''Stripped version of the `UserSerializer` class'''
 
     date_joined = serializers.SerializerMethodField(read_only=True)
-
     class Meta(UserSerializer.Meta):
         fields = [
-            'edit_url',
             'username',
             'fullname',
             'email',
             'firstname',
             'lastname',
+            'other_name',
+            'edit_url',
             'number_of_notes',
             'last_active',
             'date_joined',
@@ -118,3 +118,53 @@ class StrippedUserSerializer(UserSerializer):
 
     def get_date_joined(self, user):
         return f"{user.last_login.date()} at {user.last_login.time()}"
+
+
+class UserChangeSerializer(UserSerializer):
+    new_detail_url = serializers.HyperlinkedIdentityField(view_name='account-detail', read_only=True, lookup_field='username')
+    class Meta(UserSerializer.Meta):
+        fields = [
+            'username',
+            'firstname',
+            'lastname',
+            'other_name',
+            'email',
+            'new_detail_url',
+        ]
+
+
+class PasswordChangeSerializer(UserSerializer):
+    password = serializers.CharField(write_only=True, required=True)
+    confirm_password = serializers.CharField(write_only=True, required=True)
+    login_url =  serializers.SerializerMethodField(read_only=True)
+    message = serializers.SerializerMethodField(read_only=True)
+
+    class Meta(UserSerializer.Meta):
+        fields = [
+            'username',
+            'password',
+            'confirm_password',
+            'message',
+            'login_url',
+        ]
+
+    def validate(self, attrs):
+        if not attrs.get('password', None) or not attrs.get('confirm_password', None):
+            raise serializers.ValidationError('`password` and `confirm_password` are required fields')
+        return super().validate(attrs)
+
+    def update(self, user, validated_data):
+        request = self.context.get('request')
+        password = validated_data.get('password')
+        validate_password(password=password, user=user)
+        user.set_password(password)
+        user.save()
+        logout(request)
+        return user
+
+    def get_login_url(self, user):
+        request = self.context.get('request')
+        return reverse(viewname='account-authenticate', request=request)
+
+    def get_message(self, user):
+        return f"Password update successful for {user.username}! Please authenticate again."

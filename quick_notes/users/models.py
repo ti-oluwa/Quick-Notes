@@ -4,6 +4,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 
 from .managers import AbstractBaseUserManager
 from .gpm import GroupPermissionManager
+from api.validators import required_field
 
 
 
@@ -12,8 +13,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     '''Custom user model'''
 
     username = models.CharField(max_length=200, unique=True, default=None)
-    firstname = models.CharField(max_length=200, verbose_name='First name', default="", null=True)
-    lastname = models.CharField(max_length=200, verbose_name='Last name', default="", null=True)
+    firstname = models.CharField(max_length=200, verbose_name='First name', null=True, validators=[required_field])
+    lastname = models.CharField(max_length=200, verbose_name='Last name', null=True, validators=[required_field])
     other_name = models.CharField(max_length=200, verbose_name='Other name', null=True, blank=True, default="")
     email = models.EmailField(verbose_name='Email address', blank=True, default="", null=True)
     is_staff = models.BooleanField(default=False)
