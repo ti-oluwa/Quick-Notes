@@ -121,15 +121,15 @@ def validate_note_content(content: list[dict] | str, allowed_types: list):
 INITIAL_CONTENT_FORMAT = [
     {
         "type": "text",
-        "body": "<str>",
+        "body": "<str>"
     },
 
     {
         "type": "list_item",
         "body": {
             "checked": False,
-            "item_value": "<str>",
-        },
+            "item_value": "<str>"
+        }
     },
 
     {
@@ -141,19 +141,19 @@ INITIAL_CONTENT_FORMAT = [
                     "type": "list_item",
                     "body": {
                         "checked": False,
-                        "item_value": "<str>",
-                    },
+                        "item_value": "<str>"
+                    }
                 },
                 {
                     "type": "list_item",
                     "body": {
                         "checked": False,
-                        "item_value": "<str>",
-                    },
-                },
-            ],
-        },
-    }, 
+                        "item_value": "<str>"
+                    }
+                }
+            ]
+        }
+    } 
 ]
 
 

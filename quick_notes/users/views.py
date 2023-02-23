@@ -21,6 +21,7 @@ class UserListAPIView(UsernameLookupMixin, generics.ListAPIView):
 class UserCreateAPIView(UsernameLookupMixin, generics.CreateAPIView):
     serializer_class = UserSerializer
     queryset = global_queryset
+    permission_classes = []
 
 
 class UserDetailAPIView(AllowUserOrSuperuserMixin, UsernameLookupMixin, generics.RetrieveAPIView):
