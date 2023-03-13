@@ -35,7 +35,7 @@ __BASE_URL__: [https://quicknotesapi.pythonanywhere.com/api/](https://quicknotes
     
     _Example `GET` response data_
     
-    <code>
+    ```python
     {
       "count": 2,
       "next": null,
@@ -66,7 +66,7 @@ __BASE_URL__: [https://quicknotesapi.pythonanywhere.com/api/](https://quicknotes
               ...,
           ]
       }
-      </code>
+      ```
       
 ##
 
@@ -76,7 +76,7 @@ __BASE_URL__: [https://quicknotesapi.pythonanywhere.com/api/](https://quicknotes
     
     _Example `POST` request data_
     
-    <code>
+    ```python
     {
         "username": "Jane",
         "firstname": "Jane",
@@ -86,11 +86,11 @@ __BASE_URL__: [https://quicknotesapi.pythonanywhere.com/api/](https://quicknotes
         "password": "testing321",
         "confirm_password": "testing321"
     }
-    </code>
+    ```
     
     _Response data_
     
-    <code>
+    ```python
     {
         "username": "Jane",
         "fullname": "Jane Alice Doe",
@@ -106,7 +106,7 @@ __BASE_URL__: [https://quicknotesapi.pythonanywhere.com/api/](https://quicknotes
         "last_created_note": null,
         "last_edited_note": null
     }
-    </code>
+    ```
     
 ##
 
@@ -120,23 +120,27 @@ __BASE_URL__: [https://quicknotesapi.pythonanywhere.com/api/](https://quicknotes
     
     _Example `POST` request data_
     
-    `{"username": username, "password": user_password}`
+    ```python
+    {"username": username, "password": user_password}
+    ```
     
     _Response data_
     
-    `{"token": "12345678901234567890"}`
+    ```python
+    {"token": "12345678901234567890"}
+    ```
     
     ### Going forward, all requests must be made with this authorization token in the request headers
     
     _For example_
     
-    <code>
+    ```python
     import requests
     auth_endpoint = "http://127.0.0.1:8000/api/authenticate/"
     auth_response = requests.post(auth_endpoint, json={"username": username, "password": user_password})
     print(auth_response.json()) # To see response
-    </code>
-    <code>
+   
+   
     if auth_response.status_code == 200:
         token = auth_response.json().get('token', '')
         headers = {
@@ -144,7 +148,7 @@ __BASE_URL__: [https://quicknotesapi.pythonanywhere.com/api/](https://quicknotes
         }
         endpoint = "http://127.0.0.1:8000/api/notes/"
         response = requests.get(endpoint, headers=headers)
-    </code>
+    ```
     
   ##
   
@@ -154,14 +158,14 @@ __BASE_URL__: [https://quicknotesapi.pythonanywhere.com/api/](https://quicknotes
 
   _Example `GET` request_
   
-  <code>
+  ```python
   endpoint = http://127.0.0.1:8000/api/accounts/find/?q=Dan
   response = request.get(endpoint)
-  </code>
+  ```
 
   _Response_
 
-  <code>
+  ```python
   {
       "count": 1,
       "next": null,
@@ -180,7 +184,7 @@ __BASE_URL__: [https://quicknotesapi.pythonanywhere.com/api/](https://quicknotes
           }
       ]
   }
-  </code>
+  ```
   
   ##
   
@@ -190,7 +194,7 @@ __BASE_URL__: [https://quicknotesapi.pythonanywhere.com/api/](https://quicknotes
 
   _Example response_
 
-  <code>
+  ```python
   {
       "username": "Tolu",
       "fullname": "Daniel Afolayan",
@@ -206,7 +210,7 @@ __BASE_URL__: [https://quicknotesapi.pythonanywhere.com/api/](https://quicknotes
       "last_created_note": "http://127.0.0.1:8000/api/notes/new-note/",
       "last_edited_note": "http://127.0.0.1:8000/api/notes/new-note/"
   }
-  </code>
+  ```
   
   ##
   
@@ -216,7 +220,7 @@ __BASE_URL__: [https://quicknotesapi.pythonanywhere.com/api/](https://quicknotes
 
   _Example POST request_
 
-  <code>
+  ```python
   {
       "username": "Tolu",
       "firstname": "Toluwalase",
@@ -224,7 +228,7 @@ __BASE_URL__: [https://quicknotesapi.pythonanywhere.com/api/](https://quicknotes
       "other_name": "",
       "email": "testing@yahoo.com"
   }
-  </code>
+  ```
   
   _Example response_
   
